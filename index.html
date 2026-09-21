@@ -5,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JUMPS - Salto Hacia La Tecnología</title>
     <style>
-        /* Variables de la Paleta "Cyber-Impulse" */
         :root {
             --bg-dark: #0a0e17;
             --bg-card: #121824;
+            --bg-card-hover: #182234;
             --blue-electric: #0d5cff;
+            --blue-glow: rgba(13, 92, 255, 0.4);
             --cyan-neon: #00f5d4;
+            --cyan-glow: rgba(0, 245, 212, 0.35);
+            --amber-neon: #ff9e00;
             --text-light: #e2e8f0;
             --text-muted: #94a3b8;
             --border-glow: rgba(0, 245, 212, 0.25);
+            --header-bg: rgba(18, 24, 36, 0.95);
         }
 
         * {
@@ -21,26 +25,27 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-light);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* --- Menú de Navegación Sticky --- */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.2rem 5%;
-            background-color: rgba(18, 24, 36, 0.9);
+            padding: 1rem 5%;
+            background-color: var(--header-bg);
             border-bottom: 1px solid rgba(13, 92, 255, 0.25);
             position: sticky;
             top: 0;
             z-index: 1000;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
         }
 
         .logo {
@@ -51,13 +56,22 @@
             font-weight: 800;
             color: #ffffff;
             letter-spacing: 1px;
+            text-decoration: none;
         }
 
         .logo span {
             color: var(--cyan-neon);
         }
 
-        .logo-icon {
+        .logo-img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(0, 245, 212, 0.5);
+        }
+
+        .logo-icon-fallback {
             width: 38px;
             height: 38px;
             background: linear-gradient(135deg, var(--blue-electric), var(--cyan-neon));
@@ -70,95 +84,193 @@
             box-shadow: 0 0 12px var(--cyan-neon);
         }
 
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--cyan-neon);
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.2rem;
+            line-height: 1;
+        }
+
         nav ul {
             display: flex;
             list-style: none;
             gap: 2rem;
+            align-items: center;
         }
 
         nav a {
             color: var(--text-muted);
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s;
+            transition: color 0.3s, text-shadow 0.3s;
+            font-size: 0.95rem;
         }
 
         nav a:hover {
             color: var(--cyan-neon);
+            text-shadow: 0 0 8px rgba(0, 245, 212, 0.4);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--bg-card);
+            min-width: 220px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(13, 92, 255, 0.3);
+            border-radius: 8px;
+            z-index: 1001;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-content a {
+            color: var(--text-muted);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(0, 245, 212, 0.1);
+            color: var(--cyan-neon);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
         }
 
         .btn-cta {
             background: linear-gradient(90deg, var(--blue-electric), #0040c0);
             color: #ffffff;
-            padding: 0.6rem 1.4rem;
+            padding: 0.64rem 1.4rem;
             border-radius: 6px;
             text-decoration: none;
             font-weight: 700;
             box-shadow: 0 0 15px rgba(13, 92, 255, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+            white-space: nowrap;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-cta:hover {
             transform: translateY(-2px);
             box-shadow: 0 0 20px rgba(0, 245, 212, 0.6);
+            color: #ffffff;
         }
 
-        /* --- Hero Section --- */
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--cyan-neon);
+            color: var(--cyan-neon);
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.15);
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 245, 212, 0.15);
+            color: #ffffff;
+            box-shadow: 0 0 18px rgba(0, 245, 212, 0.4);
+        }
+
         .hero {
-            padding: 6rem 5% 4rem;
+            padding: clamp(3.5rem, 8vw, 6rem) 5% clamp(2.5rem, 6vw, 4rem);
             text-align: center;
-            max-width: 900px;
+            max-width: 980px;
             margin: 0 auto;
         }
 
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1.2rem;
+        .hero-logo-title {
+            font-size: clamp(3.2rem, 10vw, 5rem);
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 2px;
+            margin-bottom: 0.3rem;
+            line-height: 1;
+            text-shadow: 0 0 30px rgba(13, 92, 255, 0.4);
+        }
+
+        .hero-logo-title span {
+            color: var(--cyan-neon);
+            text-shadow: 0 0 20px var(--cyan-neon);
+        }
+
+        .hero-subtitle-tag {
+            font-size: clamp(1.3rem, 4vw, 2.2rem);
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 1.5rem;
             background: linear-gradient(90deg, #ffffff, var(--cyan-neon));
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            line-height: 1.2;
         }
 
         .hero p {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
             color: var(--text-muted);
-            margin-bottom: 2rem;
+            margin-bottom: 2.2rem;
+            max-width: 850px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        /* --- Secciones y Tarjetas --- */
+        section {
+            padding: clamp(2.5rem, 6vw, 4.5rem) 5%;
+        }
+
         .section-title {
             text-align: center;
-            font-size: 2rem;
-            margin: 4rem 0 2rem;
+            font-size: clamp(1.7rem, 5vw, 2.4rem);
+            margin-bottom: 2.5rem;
             color: #ffffff;
         }
 
         .section-title::after {
             content: '';
             display: block;
-            width: 60px;
+            width: 70px;
             height: 3px;
             background: var(--cyan-neon);
-            margin: 0.5rem auto 0;
+            margin: 0.6rem auto 0;
             border-radius: 2px;
-            box-shadow: 0 0 8px var(--cyan-neon);
+            box-shadow: 0 0 10px var(--cyan-neon);
         }
 
         .grid-2 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
             gap: 2rem;
-            padding: 0 5%;
             max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+            gap: 2rem;
+            max-width: 1240px;
             margin: 0 auto;
         }
 
         .grid-4 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
             gap: 1.5rem;
-            padding: 0 5%;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -167,81 +279,517 @@
             background-color: var(--bg-card);
             border: 1px solid rgba(13, 92, 255, 0.25);
             border-radius: 12px;
-            padding: 2rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            padding: clamp(1.4rem, 3vw, 2rem);
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
         }
 
         .card:hover {
             border-color: var(--cyan-neon);
-            box-shadow: 0 0 18px var(--border-glow);
+            box-shadow: 0 0 20px var(--border-glow);
+            transform: translateY(-4px);
         }
 
         .card h3 {
             color: var(--cyan-neon);
             margin-bottom: 1rem;
-            font-size: 1.4rem;
+            font-size: clamp(1.15rem, 3vw, 1.35rem);
         }
 
         .card p {
             color: var(--text-muted);
+            font-size: 0.98rem;
+        }
+
+        .service-card {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(13, 92, 255, 0.3);
+            border-radius: 16px;
+            padding: 1.8rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blue-electric), var(--cyan-neon));
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .service-card:hover {
+            border-color: var(--cyan-neon);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(0, 245, 212, 0.2);
+            background-color: var(--bg-card-hover);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-badge {
+            align-self: flex-start;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .badge-popular {
+            background: rgba(0, 245, 212, 0.15);
+            color: var(--cyan-neon);
+            border: 1px solid var(--cyan-neon);
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
+        }
+
+        .badge-express {
+            background: rgba(255, 158, 0, 0.15);
+            color: var(--amber-neon);
+            border: 1px solid var(--amber-neon);
+            box-shadow: 0 0 10px rgba(255, 158, 0, 0.3);
+        }
+
+        .badge-custom {
+            background: rgba(13, 92, 255, 0.2);
+            color: #60a5fa;
+            border: 1px solid var(--blue-electric);
+        }
+
+        .badge-b2b {
+            background: rgba(168, 85, 247, 0.2);
+            color: #c084fc;
+            border: 1px solid #a855f7;
+        }
+
+        .service-card h3 {
+            color: #ffffff;
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .service-card .description {
+            color: var(--text-muted);
+            font-size: 0.93rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .service-features li {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .service-features li::before {
+            content: '⚡';
+            color: var(--cyan-neon);
+            font-size: 0.85rem;
+        }
+
+        .service-meta {
+            background: rgba(10, 14, 23, 0.6);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+        }
+
+        .meta-item strong {
+            color: var(--text-light);
+        }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(13, 92, 255, 0.2);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .price-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .price-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--cyan-neon);
+            text-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
+        }
+
+        .promo-banner {
+            background: linear-gradient(135deg, rgba(13, 92, 255, 0.2), rgba(0, 245, 212, 0.15));
+            border: 1px solid var(--cyan-neon);
+            border-radius: 16px;
+            padding: clamp(1.8rem, 4vw, 2.8rem);
+            margin-top: 3.5rem;
+            max-width: 1240px;
+            margin-left: auto;
+            margin-right: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+            gap: 2rem;
+            align-items: center;
+            box-shadow: 0 0 25px rgba(0, 245, 212, 0.15);
+        }
+
+        .promo-text h3 {
+            color: var(--cyan-neon);
+            font-size: 1.5rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .promo-text p {
+            color: var(--text-light);
             font-size: 0.95rem;
+        }
+
+        .promo-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .promo-list li {
+            background: rgba(18, 24, 36, 0.8);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            border: 1px solid rgba(0, 245, 212, 0.2);
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .promo-list li span {
+            color: var(--cyan-neon);
+            font-weight: 700;
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .contact-info {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(13, 92, 255, 0.3);
+            border-radius: 12px;
+            padding: clamp(1.4rem, 3vw, 2.2rem);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .contact-info h3 {
+            color: var(--cyan-neon);
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            margin-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .contact-item {
+            margin-bottom: 1.2rem;
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .contact-item strong {
+            color: var(--cyan-neon);
+            display: block;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.2rem;
         }
 
         footer {
             text-align: center;
-            padding: 3rem 5%;
-            margin-top: 5rem;
+            padding: 3rem 5% 2.5rem;
+            margin-top: 4rem;
             background-color: #060910;
-            border-top: 1px solid rgba(13, 92, 255, 0.2);
+            border-top: 1px solid rgba(13, 92, 255, 0.25);
             color: var(--text-muted);
             font-size: 0.9rem;
+        }
+
+        .footer-social-section {
+            max-width: 1000px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .footer-social-title {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-social-title span {
+            color: var(--cyan-neon);
+        }
+
+        .social-links-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .social-card {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(13, 92, 255, 0.3);
+            padding: 0.8rem 1.4rem;
+            border-radius: 12px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            min-width: 230px;
+        }
+
+        .social-card:hover {
+            border-color: var(--cyan-neon);
+            box-shadow: 0 0 20px var(--cyan-glow);
+            transform: translateY(-4px);
+            background-color: var(--bg-card-hover);
+        }
+
+        .social-icon-wrapper {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            background: rgba(13, 92, 255, 0.15);
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-card:hover .social-icon-wrapper {
+            background: rgba(0, 245, 212, 0.2);
+            border-color: var(--cyan-neon);
+            box-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .social-svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--cyan-neon);
+            transition: transform 0.3s ease;
+        }
+
+        .social-card:hover .social-svg {
+            transform: scale(1.15);
+        }
+
+        .social-details {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .social-company-name {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        .social-handle {
+            font-size: 0.8rem;
+            color: var(--cyan-neon);
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            header {
+                padding: 0.9rem 4%;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: rgba(18, 24, 36, 0.98);
+                border-bottom: 1px solid rgba(13, 92, 255, 0.3);
+                padding: 1.2rem 0;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            }
+
+            nav.active {
+                display: block;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 1.2rem;
+                align-items: center;
+            }
+
+            .dropdown {
+                text-align: center;
+                width: 100%;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                border: none;
+                background-color: rgba(10, 14, 23, 0.6);
+                margin-top: 0.5rem;
+                width: 100%;
+            }
+
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
+
+            .header-cta {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            section {
+                padding: 2rem 4%;
+            }
+
+            .hero {
+                padding-top: 3.5rem;
+            }
+
+            .card, .service-card {
+                padding: 1.3rem;
+            }
+
+            .btn-cta {
+                width: 100%;
+                text-align: center;
+            }
+
+            .service-footer {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .social-card {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Menú Principal -->
     <header>
-        <div class="logo">
-            <div class="logo-icon">&#10140;</div>
+        <a href="#inicio" class="logo">
+            <img src="logo-jumps.png" alt="JUMPS Logo" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="logo-icon-fallback" style="display:none;">&#10140;</div>
             JUMPS<span>.</span>
-        </div>
-        <nav>
+        </a>
+
+        <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Abrir Menú">
+            &#9776;
+        </button>
+
+        <nav id="main-nav">
             <ul>
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#identidad">Misión y Visión</a></li>
-                <li><a href="#valores">Valores</a></li>
-                <li><a href="#ventajas">Ventajas</a></li>
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li class="dropdown">
+                    <a href="#sobre-nosotros" class="nav-link">Sobre Nosotros &#9662;</a>
+                    <div class="dropdown-content">
+                        <a href="#mision-vision" class="nav-link">Misión y Visión</a>
+                        <a href="#valores" class="nav-link">Nuestros Valores</a>
+                        <a href="#ventajas" class="nav-link">Ventajas Competitivas</a>
+                    </div>
+                </li>
+                <li><a href="#productos" class="nav-link">Servicios y Productos</a></li>
             </ul>
         </nav>
-        <a href="#contacto" class="btn-cta">Contáctanos</a>
+
+        <a href="#contacto" class="btn-cta header-cta">Contacto</a>
     </header>
 
-    <!-- Hero Section -->
     <section id="inicio" class="hero">
-        <h1>SALTO HACIA LA TECNOLOGÍA</h1>
-        <p>Centro especializado en venta y ensamblaje de piezas de computación, soporte técnico a consolas y optimización de sistemas. Desarrollamos software a medida e infraestructura técnica para el sector industrial.</p>
-        <a href="#identidad" class="btn-cta">Conoce Más</a>
+        <h1 class="hero-logo-title">JUMPS<span>.</span></h1>
+        <h2 class="hero-subtitle-tag">SALTO HACIA LA TECNOLOGÍA</h2>
+        <p>Somos tu centro técnico especializado en la venta, armado e instalación de componentes de computación, soporte para consolas y optimización de sistemas operativos, así como desarrollo de software a medida e infraestructura para el sector industrial.</p>
     </section>
 
-    <!-- Misión y Visión -->
-    <section id="identidad">
-        <h2 class="section-title">Nuestra Identidad</h2>
-        <div class="grid-2">
+    <section id="sobre-nosotros">
+        <h2 class="section-title">Sobre Nosotros</h2>
+
+        <div id="mision-vision" class="grid-2">
             <div class="card">
                 <h3>Misión</h3>
-                <p>Somos una empresa conformada por profesionales en programación y electrónica, especializada en la venta de componentes y dispositivos electrónicos, el desarrollo de software a medida para empresas e industrias, y el servicio de mantenimiento técnico preventivo y correctivo. Nos enfocamos en brindar soluciones integrales con atención totalmente adaptada a cada cliente.</p>
+                <p>Somos una empresa conformada por profesionales en programación y electrónica, especializada en la venta de componentes y dispositivos electrónicos, el desarrollo de software a medida para empresas e industrias, y el servicio de mantenimiento técnico preventivo y correctivo. Nos enfocamos en brindar soluciones integrales con atención adaptada a cada cliente.</p>
             </div>
             <div class="card">
                 <h3>Visión</h3>
                 <p>Ser reconocidos como el aliado tecnológico líder en la región, transformando la forma en que las personas y las empresas acceden al hardware y al software personalizado. Aspiramos a ser el punto de referencia por nuestra excelencia técnica, honestidad y capacidad de ofrecer soluciones integrales impulsando la innovación al alcance de todos.</p>
             </div>
         </div>
-    </section>
 
-    <!-- Valores -->
-    <section id="valores">
-        <h2 class="section-title">Nuestros Valores</h2>
+        <h2 id="valores" class="section-title" style="margin-top: 4rem;">Nuestros Valores</h2>
         <div class="grid-4">
             <div class="card">
                 <h3>Confianza</h3>
@@ -260,11 +808,8 @@
                 <p>Garantizamos transparencia y ética estricta en cada diagnóstico, cotización y entrega de software o mantenimiento.</p>
             </div>
         </div>
-    </section>
 
-    <!-- Ventajas Competitivas -->
-    <section id="ventajas">
-        <h2 class="section-title">Ventajas Competitivas</h2>
+        <h2 id="ventajas" class="section-title" style="margin-top: 4rem;">Ventajas Competitivas</h2>
         <div class="grid-2">
             <div class="card">
                 <h3>Multimarca y Multiplataforma</h3>
@@ -277,9 +822,285 @@
         </div>
     </section>
 
+    <section id="productos">
+        <h2 class="section-title">Servicios y Productos</h2>
+
+        <div class="grid-3">
+            <div class="service-card">
+                <div>
+                    <span class="card-badge badge-popular">⚡ MÁS POPULAR</span>
+                    <h3>Mantenimiento "Cyber-Clean"</h3>
+                    <p class="description">Limpieza física profunda antiestática, cambio de pasta térmica de alta conductividad y pruebas de estabilidad térmica.</p>
+                    <ul class="service-features">
+                        <li>Sopleteo y limpieza ultrasónica</li>
+                        <li>Pasta térmica MX-4 / Kryonaut</li>
+                        <li>Estrés y monitoreo de temperaturas</li>
+                        <li>Aplica para PC, Laptop y Consolas</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="service-meta">
+                        <div class="meta-item"><span>⏱️ Entrega:</span> <strong>3 a 5 Horas (Mismo día)</strong></div>
+                        <div class="meta-item"><span>🛡️ Garantía:</span> <strong>30 Días mano de obra</strong></div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="price-box">
+                            <span class="price-label">Desde</span>
+                            <span class="price-value">$350 MXN</span>
+                        </div>
+                        <a href="#contacto" class="btn-cta btn-outline">Agendar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <span class="card-badge badge-express">💻 EXPRESS</span>
+                    <h3>Optimización & Formateo S.O.</h3>
+                    <p class="description">Puesta a punto completa de tu sistema operativo para maximizar la velocidad y eliminar software basura o virus.</p>
+                    <ul class="service-features">
+                        <li>Windows 10/11 o Linux oficial</li>
+                        <li>Drivers y BIOS actualizados</li>
+                        <li>Respaldo seguro de datos (hasta 50GB)</li>
+                        <li>Paquetería esencial instalada</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="service-meta">
+                        <div class="meta-item"><span>⏱️ Entrega:</span> <strong>4 a 6 Horas</strong></div>
+                        <div class="meta-item"><span>🛡️ Garantía:</span> <strong>30 Días en S.O.</strong></div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="price-box">
+                            <span class="price-label">Desde</span>
+                            <span class="price-value">$350 MXN</span>
+                        </div>
+                        <a href="#contacto" class="btn-cta btn-outline">Solicitar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <span class="card-badge badge-custom">🎮 GAMING & PRO</span>
+                    <h3>Armado de PC Custom</h3>
+                    <p class="description">Selección optimizada de piezas según tu presupuesto para Gaming 1080p/4K, Edición de Video o Trabajo Pesado.</p>
+                    <ul class="service-features">
+                        <li>Cable management profesional</li>
+                        <li>Pruebas XMP/EXPO de memoria RAM</li>
+                        <li>Montaje de refrigeración líquida/aire</li>
+                        <li>Asesoría de componentes GRATIS</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="service-meta">
+                        <div class="meta-item"><span>⏱️ Entrega:</span> <strong>24 a 48 Horas</strong></div>
+                        <div class="meta-item"><span>🛡️ Garantía:</span> <strong>Garantía de ensamblado</strong></div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="price-box">
+                            <span class="price-label">Mano de obra</span>
+                            <span class="price-value">$600 MXN</span>
+                        </div>
+                        <a href="#contacto" class="btn-cta btn-outline">Cotizar Build</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <span class="card-badge badge-express">🛠️ HARDWARE</span>
+                    <h3>Diagnóstico & Reparación</h3>
+                    <p class="description">Detección precisa de fallas eléctricas, tarjetas madre, fuentes de poder, pantallas o almacenamiento dañado.</p>
+                    <ul class="service-features">
+                        <li>Detección de cortos y componentes</li>
+                        <li>Informe transparente de solución</li>
+                        <li>Sin cobro de diagnóstico al reparar</li>
+                        <li>Refacciones 100% garantizadas</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="service-meta">
+                        <div class="meta-item"><span>⏱️ Diagnóstico:</span> <strong>24 a 48 Horas</strong></div>
+                        <div class="meta-item"><span>🛡️ Política:</span> <strong>Sin sorpresas en precio</strong></div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="price-box">
+                            <span class="price-label">Revisión</span>
+                            <span class="price-value">$200 MXN</span>
+                        </div>
+                        <a href="#contacto" class="btn-cta btn-outline">Traer Equipo</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <span class="card-badge badge-popular">📦 COMPONENTES</span>
+                    <h3>Stock & Upgrades Clave</h3>
+                    <p class="description">Venta directa e instalación de almacenamiento de alta velocidad, memorias y fuentes de poder certificadas.</p>
+                    <ul class="service-features">
+                        <li>Discos SSD NVMe M.2 y SATA 2.5"</li>
+                        <li>Memorias RAM DDR4 / DDR5</li>
+                        <li>Fuentes de Poder 80+ Bronze/Gold</li>
+                        <li>Pastas térmicas de alta gama</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="service-meta">
+                        <div class="meta-item"><span>⏱️ Instalación:</span> <strong>Express en sucursal</strong></div>
+                        <div class="meta-item"><span>🛡️ Garantía:</span> <strong>Directa de fábrica</strong></div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="price-box">
+                            <span class="price-label">Precios</span>
+                            <span class="price-value">Bajo Pedido</span>
+                        </div>
+                        <a href="#contacto" class="btn-cta btn-outline">Consultar Stock</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <span class="card-badge badge-b2b">🏭 SECTOR B2B</span>
+                    <h3>Software & Redes Industriales</h3>
+                    <p class="description">Desarrollo de software a medida, automatización de procesos y optimización técnica para empresas y fábricas locales.</p>
+                    <ul class="service-features">
+                        <li>Software de control a medida</li>
+                        <li>Infraestructura de red corporativa</li>
+                        <li>Asesoría técnica presencial en planta</li>
+                        <li>Planes de mantenimiento contratado</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="service-meta">
+                        <div class="meta-item"><span>⏱️ Visita Inicial:</span> <strong>Previa Cita</strong></div>
+                        <div class="meta-item"><span>🛡️ Diagnóstico:</span> <strong>Presencial Gratuito</strong></div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="price-box">
+                            <span class="price-label">Cotización</span>
+                            <span class="price-value">Proyecto</span>
+                        </div>
+                        <a href="#contacto" class="btn-cta">Agendar Cita B2B</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="promo-banner">
+            <div class="promo-text">
+                <h3>🚀 Promociones Especiales de Apertura</h3>
+                <p>Aprovecha nuestros paquetes de bienvenida diseñados para estudiantes, gamers y usuarios locales.</p>
+            </div>
+            <ul class="promo-list">
+                <li><span>Combo "Puesta a Punto":</span> Cambio a Disco SSD 480GB + Mantenimiento Cyber-Clean por <strong>$899 MXN</strong>.</li>
+                <li><span>Estudiantes:</span> Diagnóstico <strong>GRATIS</strong> al presentar tu credencial escolar en la sucursal.</li>
+                <li><span>Garantía Transparencia JUMPS:</span> Recibe fotos/video del proceso de servicio por WhatsApp.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="contacto">
+        <h2 class="section-title">Contáctanos</h2>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Medios de Contacto</h3>
+                <div class="contact-item">
+                    <strong>Teléfono / WhatsApp:</strong>
+                    +52 (662) 123-4567
+                </div>
+                <div class="contact-item">
+                    <strong>Correo Electrónico:</strong>
+                    contacto@jumps.tech
+                </div>
+                <div class="contact-item">
+                    <strong>Horario de Atención:</strong>
+                    Lunes a Viernes: 9:00 AM - 6:00 PM<br>
+                    Sábados: 9:00 AM - 2:00 PM
+                </div>
+            </div>
+            <div class="contact-info">
+                <h3>Ubicación de Sucursal</h3>
+                <div class="contact-item">
+                    <strong>Dirección Principal:</strong>
+                    Av. Tecnológico #450, Col. Centro, Hermosillo, Sonora, México.
+                </div>
+                <div class="contact-item">
+                    <strong>Laboratorio Técnico & Atención Presencial:</strong>
+                    Recepción de equipos, venta directa de componentes e infraestructura para empresas en nuestra sucursal central.
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer>
+        <div class="footer-social-section">
+            <h4 class="footer-social-title">Síguenos en Redes Sociales <span>JUMPS</span></h4>
+            <div class="social-links-grid">
+                <!-- Facebook Card -->
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="Facebook JUMPS">
+                    <div class="social-icon-wrapper">
+                        <svg class="social-svg" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                    </div>
+                    <div class="social-details">
+                        <span class="social-company-name">JUMPS</span>
+                        <span class="social-handle">@jumps.tech</span>
+                    </div>
+                </a>
+
+                <!-- Instagram Card -->
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="Instagram JUMPS">
+                    <div class="social-icon-wrapper">
+                        <svg class="social-svg" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                    </div>
+                    <div class="social-details">
+                        <span class="social-company-name">JUMPS</span>
+                        <span class="social-handle">@jumps.tech</span>
+                    </div>
+                </a>
+
+                <!-- YouTube Card -->
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="YouTube JUMPS">
+                    <div class="social-icon-wrapper">
+                        <svg class="social-svg" viewBox="0 0 24 24">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                    </div>
+                    <div class="social-details">
+                        <span class="social-company-name">JUMPS</span>
+                        <span class="social-handle">@jumps.tech</span>
+                    </div>
+                </a>
+            </div>
+        </div>
         <p>&copy; JUMPS - Salto Hacia La Tecnología. Todos los derechos reservados.</p>
     </footer>
+
+    <script>
+        const menuToggle = document.getElementById('mobile-menu-toggle');
+        const mainNav = document.getElementById('main-nav');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        menuToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+            menuToggle.innerHTML = mainNav.classList.contains('active') ? '&#10005;' : '&#9776;';
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (mainNav.classList.contains('active')) {
+                    mainNav.classList.remove('active');
+                    menuToggle.innerHTML = '&#9776;';
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
